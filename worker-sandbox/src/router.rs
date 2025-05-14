@@ -1,6 +1,6 @@
 use crate::{
     alarm, analytics_engine, assets, cache, d1, fetch, form, kv, queue, r2, request, service,
-    socket, user, ws, SomeSharedData, GLOBAL_STATE,
+    socket, user, ws, sql_counter, SomeSharedData, GLOBAL_STATE,
 };
 #[cfg(feature = "http")]
 use std::convert::TryInto;
@@ -228,6 +228,7 @@ pub fn make_router(data: SomeSharedData, env: Env) -> axum::Router {
             "/durable/auto-response",
             get(handler!(crate::test::auto_response::handle_auto_response)),
         )
+        .route("/sql-counter/:name", get(handler!(sql_counter::handle_sql_counter)))
         .fallback(get(handler!(catchall)))
         .layer(Extension(env))
         .layer(Extension(data))
@@ -372,6 +373,7 @@ pub fn make_router<'a>(data: SomeSharedData) -> Router<'a, SomeSharedData> {
             "/durable/auto-response",
             handler!(crate::test::auto_response::handle_auto_response),
         )
+        .get_async("/sql-counter/:name", handler!(sql_counter::handle_sql_counter))
         .or_else_any_method_async("/*catchall", handler!(catchall))
 }
 
