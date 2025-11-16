@@ -1,0 +1,15 @@
+[package]
+name = "mtls-example"
+version = "0.0.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+worker = { version = "0.6.7", path = "../../worker" }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1

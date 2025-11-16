@@ -182,6 +182,7 @@ pub use crate::headers::Headers;
 pub use crate::http::Method;
 pub use crate::hyperdrive::*;
 pub use crate::kv::{KvError, KvStore};
+pub use crate::mtls_certificate::*;
 #[cfg(feature = "queue")]
 pub use crate::queue::*;
 pub use crate::r2::*;
@@ -224,6 +225,7 @@ mod headers;
 mod http;
 mod hyperdrive;
 pub mod kv;
+mod mtls_certificate;
 #[cfg(feature = "queue")]
 mod queue;
 mod r2;

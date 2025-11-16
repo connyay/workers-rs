@@ -1,0 +1,19 @@
+name = "mtls-example"
+main = "build/worker/shim.mjs"
+compatibility_date = "2024-11-15"
+
+# To use this example:
+# 1. Upload your mTLS certificate:
+#    wrangler mtls-certificate upload --cert cert.pem --key key.pem
+#
+# 2. Uncomment and configure the binding below with your certificate ID:
+#
+# mtls_certificates = [
+#   { binding = "MY_CERT", certificate_id = "<CERTIFICATE_ID>" }
+# ]
+#
+# 3. Build and deploy:
+#    npm i && npm run build && wrangler deploy
+
+[build]
+command = "cargo install -q worker-build && worker-build --release"
