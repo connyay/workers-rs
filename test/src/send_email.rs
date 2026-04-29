@@ -1,9 +1,8 @@
 use crate::SomeSharedData;
 use futures_util::stream::once;
-use wasm_bindgen::JsCast;
 use worker::{
-    web_sys, worker_sys, Date, EmailAddress, EmailMessage, Env, FixedLengthStream, Request,
-    Response, Result, SendEmail, SendEmailBuilder,
+    worker_sys, Date, EmailAddress, EmailMessage, Env, FixedLengthStream, Request, Response,
+    Result, SendEmail, SendEmailBuilder,
 };
 
 const SENDER: &str = "allowed-sender@example.com";
@@ -134,16 +133,15 @@ async fn dispatch_mime(sender: &SendEmail, scenario: &MimeScenario) -> Result<St
 // Exercises the `EmailMessage::new_with_readable_stream` constructor — the
 // `&str` raw path is covered by `dispatch_mime`. Builds a one-chunk
 // `FixedLengthStream` and pulls the readable side off the underlying
-// TransformStream.
+// `TransformStream` via Deref (`FixedLengthStream` extends
+// `web_sys::TransformStream`, so `.readable()` resolves through it).
 async fn dispatch_mime_stream(sender: &SendEmail) -> Result<String> {
     let scenario = MimeScenario::for_name("mime-ok").expect("mime-ok scenario must exist");
     let raw = scenario.raw().into_bytes();
     let len = raw.len() as u64;
     let fixed: worker_sys::FixedLengthStream =
         FixedLengthStream::wrap(once(async move { Ok(raw) }), len).into();
-    let stream = fixed
-        .unchecked_into::<web_sys::TransformStream>()
-        .readable();
+    let stream = fixed.readable();
     let message = EmailMessage::new_with_readable_stream(
         scenario.envelope_from,
         scenario.envelope_to,
