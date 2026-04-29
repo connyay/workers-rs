@@ -2,6 +2,10 @@ version = 0.1
 
 [[task]]
 name = 'build:types'
+deps = ['build:types:email', 'build:types:flagship']
+
+[[task]]
+name = 'build:types:email'
 deps = ['install:ts-gen']
 # `Env` / `ExecutionContext` are project-specific re-exports that ts-gen
 # can't infer; everything else (`ReadableStream`, `Headers`, `Event`, …)
@@ -9,6 +13,11 @@ deps = ['install:ts-gen']
 run = '''ts-gen --input types/email.d.ts --output worker/src/email.rs \
   --external "Env=crate::Env" \
   --external "ExecutionContext=crate::Context"'''
+
+[[task]]
+name = 'build:types:flagship'
+deps = ['install:ts-gen']
+run = 'ts-gen --input types/flagship.d.ts --output worker/src/flagship_gen.rs'
 
 [[task]]
 name = 'install:ts-gen'
