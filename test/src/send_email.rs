@@ -151,10 +151,7 @@ async fn dispatch_mime_stream(sender: &SendEmail) -> Result<String> {
     Ok(result.message_id())
 }
 
-async fn dispatch_structured(
-    sender: &SendEmail,
-    builder: SendEmailBuilder,
-) -> Result<String> {
+async fn dispatch_structured(sender: &SendEmail, builder: SendEmailBuilder) -> Result<String> {
     let result = sender.send_with_builder(&builder).await?;
     Ok(result.message_id())
 }
