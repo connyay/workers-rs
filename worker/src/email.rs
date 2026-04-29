@@ -1,4 +1,3 @@
-#[allow(unused_imports)] use email::EmailMessage;
 #[allow(dead_code)]
 use crate::Context as ExecutionContext;
 #[allow(dead_code)]
@@ -41,69 +40,32 @@ extern "C" {
     pub fn set_message_id(this: &EmailSendResult, val: &str);
 }
 impl EmailSendResult {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        #[allow(unused_imports)]
-        use wasm_bindgen::JsCast;
-        JsCast::unchecked_into(js_sys::Object::new())
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `message_id`: The Email Message ID"]
+    pub fn new(message_id: &str) -> EmailSendResult {
+        Self::builder(message_id).build()
     }
-    pub fn builder() -> EmailSendResultBuilder {
-        EmailSendResultBuilder {
-            inner: Self::new(),
-            required: 1u64,
-        }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `message_id`: The Email Message ID"]
+    pub fn builder(message_id: &str) -> EmailSendResultBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_message_id(message_id);
+        EmailSendResultBuilder { inner }
     }
 }
 pub struct EmailSendResultBuilder {
     inner: EmailSendResult,
-    required: u64,
 }
-#[allow(unused_mut)]
 impl EmailSendResultBuilder {
-    pub fn message_id(mut self, val: &str) -> Self {
-        self.inner.set_message_id(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn build(self) -> Result<EmailSendResult, JsValue> {
-        if self.required != 0 {
-            let mut missing = Vec::new();
-            if self.required & 1u64 != 0 {
-                missing.push("missing required property `messageId`");
-            }
-            return Err(JsValue::from_str(&format!(
-                "{}: {}",
-                stringify!(EmailSendResult),
-                missing.join(", ")
-            )));
-        }
-        Ok(self.inner)
+    pub fn build(self) -> EmailSendResult {
+        self.inner
     }
 }
 #[wasm_bindgen]
 extern "C" {
-    # [wasm_bindgen (extends = Object)]
-    #[derive(Debug, Clone, PartialEq, Eq)]
-    pub type StructuredEmailMessage;
-    #[doc = " Envelope From attribute of the email message."]
-    #[wasm_bindgen(method, getter)]
-    pub fn from(this: &StructuredEmailMessage) -> String;
-    #[doc = " Envelope To attribute of the email message."]
-    #[wasm_bindgen(method, getter)]
-    pub fn to(this: &StructuredEmailMessage) -> String;
-}
-impl StructuredEmailMessage {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        #[allow(unused_unsafe)]
-        unsafe {
-            JsValue::from(js_sys::Object::new()).unchecked_into()
-        }
-    }
-}
-#[wasm_bindgen]
-extern "C" {
-    # [wasm_bindgen (extends = StructuredEmailMessage , extends = Object)]
+    # [wasm_bindgen (extends = email :: EmailMessage , extends = Object)]
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub type ForwardableEmailMessage;
     #[doc = " Stream of the email message content."]
@@ -180,7 +142,7 @@ extern "C" {
     #[wasm_bindgen(method, catch)]
     pub async fn reply(
         this: &ForwardableEmailMessage,
-        message: &StructuredEmailMessage,
+        message: &email::EmailMessage,
     ) -> Result<EmailSendResult, JsValue>;
 }
 #[wasm_bindgen]
@@ -218,90 +180,207 @@ extern "C" {
     pub fn set_type(this: &EmailAttachment, val: &str);
 }
 impl EmailAttachment {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        #[allow(unused_imports)]
-        use wasm_bindgen::JsCast;
-        JsCast::unchecked_into(js_sys::Object::new())
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_inline(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
+        Self::builder_inline(content, filename, r#type).build()
     }
-    pub fn builder() -> EmailAttachmentBuilder {
-        EmailAttachmentBuilder {
-            inner: Self::new(),
-            required: 15u64,
-        }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_attachment(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
+        Self::builder_attachment(content, filename, r#type).build()
+    }
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_inline_with_array_buffer(
+        content: &ArrayBuffer,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachment {
+        Self::builder_inline_with_array_buffer(content, filename, r#type).build()
+    }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_attachment_with_array_buffer(
+        content: &ArrayBuffer,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachment {
+        Self::builder_attachment_with_array_buffer(content, filename, r#type).build()
+    }
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_inline_with_js_value(
+        content: &Object,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachment {
+        Self::builder_inline_with_js_value(content, filename, r#type).build()
+    }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn new_attachment_with_js_value(
+        content: &Object,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachment {
+        Self::builder_attachment_with_js_value(content, filename, r#type).build()
+    }
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_inline(content: &str, filename: &str, r#type: &str) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content(content);
+        inner.set_disposition("inline");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
+    }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_attachment(
+        content: &str,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content(content);
+        inner.set_disposition_with_js_value("attachment");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
+    }
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_inline_with_array_buffer(
+        content: &ArrayBuffer,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content_with_array_buffer(content);
+        inner.set_disposition("inline");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
+    }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_attachment_with_array_buffer(
+        content: &ArrayBuffer,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content_with_array_buffer(content);
+        inner.set_disposition_with_js_value("attachment");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
+    }
+    #[doc = " * `disposition: \"inline\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_inline_with_js_value(
+        content: &Object,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content_with_js_value(content);
+        inner.set_disposition("inline");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
+    }
+    #[doc = " * `disposition: \"attachment\"`"]
+    #[doc = " "]
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `content`"]
+    #[doc = " * `filename`"]
+    #[doc = " * `type`"]
+    pub fn builder_attachment_with_js_value(
+        content: &Object,
+        filename: &str,
+        r#type: &str,
+    ) -> EmailAttachmentBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_content_with_js_value(content);
+        inner.set_disposition_with_js_value("attachment");
+        inner.set_filename(filename);
+        inner.set_type(r#type);
+        EmailAttachmentBuilder { inner }
     }
 }
 pub struct EmailAttachmentBuilder {
     inner: EmailAttachment,
-    required: u64,
 }
-#[allow(unused_mut)]
 impl EmailAttachmentBuilder {
-    pub fn content(mut self, val: &str) -> Self {
-        self.inner.set_content(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn content_with_array_buffer(mut self, val: &ArrayBuffer) -> Self {
-        self.inner.set_content_with_array_buffer(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn content_with_js_value(mut self, val: &Object) -> Self {
-        self.inner.set_content_with_js_value(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn content_id(mut self, val: &str) -> Self {
+    pub fn content_id(self, val: &str) -> Self {
         self.inner.set_content_id(val);
         self
     }
-    pub fn content_id_with_undefined(mut self, val: &Undefined) -> Self {
+    pub fn content_id_with_undefined(self, val: &Undefined) -> Self {
         self.inner.set_content_id_with_undefined(val);
         self
     }
-    pub fn disposition(mut self, val: &str) -> Self {
-        self.inner.set_disposition(val);
-        self.required &= 18446744073709551613u64;
-        self
-    }
-    pub fn disposition_with_js_value(mut self, val: &str) -> Self {
-        self.inner.set_disposition_with_js_value(val);
-        self.required &= 18446744073709551613u64;
-        self
-    }
-    pub fn filename(mut self, val: &str) -> Self {
-        self.inner.set_filename(val);
-        self.required &= 18446744073709551611u64;
-        self
-    }
-    pub fn r#type(mut self, val: &str) -> Self {
-        self.inner.set_type(val);
-        self.required &= 18446744073709551607u64;
-        self
-    }
-    pub fn build(self) -> Result<EmailAttachment, JsValue> {
-        if self.required != 0 {
-            let mut missing = Vec::new();
-            if self.required & 1u64 != 0 {
-                missing.push("missing required property `content`");
-            }
-            if self.required & 2u64 != 0 {
-                missing.push("missing required property `disposition`");
-            }
-            if self.required & 4u64 != 0 {
-                missing.push("missing required property `filename`");
-            }
-            if self.required & 8u64 != 0 {
-                missing.push("missing required property `type`");
-            }
-            return Err(JsValue::from_str(&format!(
-                "{}: {}",
-                stringify!(EmailAttachment),
-                missing.join(", ")
-            )));
-        }
-        Ok(self.inner)
+    pub fn build(self) -> EmailAttachment {
+        self.inner
     }
 }
 #[wasm_bindgen]
@@ -319,51 +398,30 @@ extern "C" {
     pub fn set_email(this: &EmailAddress, val: &str);
 }
 impl EmailAddress {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        #[allow(unused_imports)]
-        use wasm_bindgen::JsCast;
-        JsCast::unchecked_into(js_sys::Object::new())
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `name`"]
+    #[doc = " * `email`"]
+    pub fn new(name: &str, email: &str) -> EmailAddress {
+        Self::builder(name, email).build()
     }
-    pub fn builder() -> EmailAddressBuilder {
-        EmailAddressBuilder {
-            inner: Self::new(),
-            required: 3u64,
-        }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `name`"]
+    #[doc = " * `email`"]
+    pub fn builder(name: &str, email: &str) -> EmailAddressBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_name(name);
+        inner.set_email(email);
+        EmailAddressBuilder { inner }
     }
 }
 pub struct EmailAddressBuilder {
     inner: EmailAddress,
-    required: u64,
 }
-#[allow(unused_mut)]
 impl EmailAddressBuilder {
-    pub fn name(mut self, val: &str) -> Self {
-        self.inner.set_name(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn email(mut self, val: &str) -> Self {
-        self.inner.set_email(val);
-        self.required &= 18446744073709551613u64;
-        self
-    }
-    pub fn build(self) -> Result<EmailAddress, JsValue> {
-        if self.required != 0 {
-            let mut missing = Vec::new();
-            if self.required & 1u64 != 0 {
-                missing.push("missing required property `name`");
-            }
-            if self.required & 2u64 != 0 {
-                missing.push("missing required property `email`");
-            }
-            return Err(JsValue::from_str(&format!(
-                "{}: {}",
-                stringify!(EmailAddress),
-                missing.join(", ")
-            )));
-        }
-        Ok(self.inner)
+    pub fn build(self) -> EmailAddress {
+        self.inner
     }
 }
 #[wasm_bindgen]
@@ -372,8 +430,10 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub type SendEmail;
     #[wasm_bindgen(method, catch)]
-    pub async fn send(this: &SendEmail, message: &EmailMessage)
-        -> Result<EmailSendResult, JsValue>;
+    pub async fn send(
+        this: &SendEmail,
+        message: &email::EmailMessage,
+    ) -> Result<EmailSendResult, JsValue>;
     #[wasm_bindgen(method, catch, js_name = "send")]
     pub async fn send_with_builder(
         this: &SendEmail,
@@ -437,109 +497,157 @@ extern "C" {
     pub fn set_attachments(this: &SendEmailBuilder, val: &Array<EmailAttachment>);
 }
 impl SendEmailBuilder {
-    #[allow(clippy::new_without_default)]
-    pub fn new() -> Self {
-        #[allow(unused_imports)]
-        use wasm_bindgen::JsCast;
-        JsCast::unchecked_into(js_sys::Object::new())
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn new(from: &str, to: &str, subject: &str) -> SendEmailBuilder {
+        Self::builder(from, to, subject).build()
     }
-    pub fn builder() -> SendEmailBuilderBuilder {
-        SendEmailBuilderBuilder {
-            inner: Self::new(),
-            required: 7u64,
-        }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn new_with_str_and_array(
+        from: &str,
+        to: &Array<JsString>,
+        subject: &str,
+    ) -> SendEmailBuilder {
+        Self::builder_with_str_and_array(from, to, subject).build()
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn new_with_email_address_and_str(
+        from: &EmailAddress,
+        to: &str,
+        subject: &str,
+    ) -> SendEmailBuilder {
+        Self::builder_with_email_address_and_str(from, to, subject).build()
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn new_with_email_address_and_array(
+        from: &EmailAddress,
+        to: &Array<JsString>,
+        subject: &str,
+    ) -> SendEmailBuilder {
+        Self::builder_with_email_address_and_array(from, to, subject).build()
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn builder(from: &str, to: &str, subject: &str) -> SendEmailBuilderBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_from(from);
+        inner.set_to(to);
+        inner.set_subject(subject);
+        SendEmailBuilderBuilder { inner }
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn builder_with_str_and_array(
+        from: &str,
+        to: &Array<JsString>,
+        subject: &str,
+    ) -> SendEmailBuilderBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_from(from);
+        inner.set_to_with_array(to);
+        inner.set_subject(subject);
+        SendEmailBuilderBuilder { inner }
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn builder_with_email_address_and_str(
+        from: &EmailAddress,
+        to: &str,
+        subject: &str,
+    ) -> SendEmailBuilderBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_from_with_email_address(from);
+        inner.set_to(to);
+        inner.set_subject(subject);
+        SendEmailBuilderBuilder { inner }
+    }
+    #[doc = " # Provided fields"]
+    #[doc = " "]
+    #[doc = " * `from`"]
+    #[doc = " * `to`"]
+    #[doc = " * `subject`"]
+    pub fn builder_with_email_address_and_array(
+        from: &EmailAddress,
+        to: &Array<JsString>,
+        subject: &str,
+    ) -> SendEmailBuilderBuilder {
+        let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
+        inner.set_from_with_email_address(from);
+        inner.set_to_with_array(to);
+        inner.set_subject(subject);
+        SendEmailBuilderBuilder { inner }
     }
 }
 pub struct SendEmailBuilderBuilder {
     inner: SendEmailBuilder,
-    required: u64,
 }
-#[allow(unused_mut)]
 impl SendEmailBuilderBuilder {
-    pub fn from(mut self, val: &str) -> Self {
-        self.inner.set_from(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn from_with_email_address(mut self, val: &EmailAddress) -> Self {
-        self.inner.set_from_with_email_address(val);
-        self.required &= 18446744073709551614u64;
-        self
-    }
-    pub fn to(mut self, val: &str) -> Self {
-        self.inner.set_to(val);
-        self.required &= 18446744073709551613u64;
-        self
-    }
-    pub fn to_with_array(mut self, val: &Array<JsString>) -> Self {
-        self.inner.set_to_with_array(val);
-        self.required &= 18446744073709551613u64;
-        self
-    }
-    pub fn subject(mut self, val: &str) -> Self {
-        self.inner.set_subject(val);
-        self.required &= 18446744073709551611u64;
-        self
-    }
-    pub fn reply_to(mut self, val: &str) -> Self {
+    pub fn reply_to(self, val: &str) -> Self {
         self.inner.set_reply_to(val);
         self
     }
-    pub fn reply_to_with_email_address(mut self, val: &EmailAddress) -> Self {
+    pub fn reply_to_with_email_address(self, val: &EmailAddress) -> Self {
         self.inner.set_reply_to_with_email_address(val);
         self
     }
-    pub fn cc(mut self, val: &str) -> Self {
+    pub fn cc(self, val: &str) -> Self {
         self.inner.set_cc(val);
         self
     }
-    pub fn cc_with_array(mut self, val: &Array<JsString>) -> Self {
+    pub fn cc_with_array(self, val: &Array<JsString>) -> Self {
         self.inner.set_cc_with_array(val);
         self
     }
-    pub fn bcc(mut self, val: &str) -> Self {
+    pub fn bcc(self, val: &str) -> Self {
         self.inner.set_bcc(val);
         self
     }
-    pub fn bcc_with_array(mut self, val: &Array<JsString>) -> Self {
+    pub fn bcc_with_array(self, val: &Array<JsString>) -> Self {
         self.inner.set_bcc_with_array(val);
         self
     }
-    pub fn headers(mut self, val: &Object<JsString>) -> Self {
+    pub fn headers(self, val: &Object<JsString>) -> Self {
         self.inner.set_headers(val);
         self
     }
-    pub fn text(mut self, val: &str) -> Self {
+    pub fn text(self, val: &str) -> Self {
         self.inner.set_text(val);
         self
     }
-    pub fn html(mut self, val: &str) -> Self {
+    pub fn html(self, val: &str) -> Self {
         self.inner.set_html(val);
         self
     }
-    pub fn attachments(mut self, val: &Array<EmailAttachment>) -> Self {
+    pub fn attachments(self, val: &Array<EmailAttachment>) -> Self {
         self.inner.set_attachments(val);
         self
     }
-    pub fn build(self) -> Result<SendEmailBuilder, JsValue> {
-        if self.required != 0 {
-            let mut missing = Vec::new();
-            if self.required & 1u64 != 0 {
-                missing.push("missing required property `from`");
-            }
-            if self.required & 2u64 != 0 {
-                missing.push("missing required property `to`");
-            }
-            if self.required & 4u64 != 0 {
-                missing.push("missing required property `subject`");
-            }
-            return Err(JsValue::from_str(&format!(
-                "{}: {}",
-                stringify!(SendEmailBuilder),
-                missing.join(", ")
-            )));
-        }
-        Ok(self.inner)
+    pub fn build(self) -> SendEmailBuilder {
+        self.inner
     }
 }
 #[wasm_bindgen]
@@ -570,8 +678,10 @@ pub mod email {
             to: &str,
             raw: &ReadableStream,
         ) -> Result<EmailMessage, JsValue>;
+        #[doc = " Envelope From attribute of the email message."]
         #[wasm_bindgen(method, getter)]
         pub fn from(this: &EmailMessage) -> String;
+        #[doc = " Envelope To attribute of the email message."]
         #[wasm_bindgen(method, getter)]
         pub fn to(this: &EmailMessage) -> String;
     }

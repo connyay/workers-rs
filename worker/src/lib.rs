@@ -195,7 +195,6 @@ pub use crate::schedule::*;
 pub use crate::secret_store::SecretStore;
 pub use crate::send_email::{
     EmailAddress, EmailAttachment, EmailMessage, EmailSendResult, SendEmail, SendEmailBuilder,
-    StructuredEmailMessage,
 };
 pub use crate::socket::*;
 pub use crate::streams::*;

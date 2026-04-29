@@ -9,14 +9,13 @@ use crate::{EnvBinding, Result};
 //
 // `EmailMessage` is the constructor class imported from
 // `cloudflare:email`, used to build raw-MIME messages and pass to
-// `SendEmail.send(message)`. `StructuredEmailMessage` is the global
-// envelope-getter interface exposed on `ForwardableEmailMessage` and
-// `reply`. Same JS object, two distinct Rust types — see the d.ts EDIT
-// note for the naming rationale.
+// `SendEmail.send(message)`. It also doubles as the instance-shape
+// type referenced by `ForwardableEmailMessage` and `reply()` — same JS
+// object collapsed to a single Rust type, see the d.ts EDIT note for
+// the naming rationale.
 pub use crate::email::email::EmailMessage;
 pub use crate::email::{
     EmailAddress, EmailAttachment, EmailSendResult, SendEmail, SendEmailBuilder,
-    StructuredEmailMessage,
 };
 
 impl EnvBinding for SendEmail {
@@ -30,5 +29,19 @@ impl EnvBinding for SendEmail {
     // skip the check and `unchecked_into`.
     fn get(val: wasm_bindgen::JsValue) -> Result<Self> {
         Ok(val.unchecked_into())
+    }
+}
+
+#[cfg(test)]
+mod send_check {
+    // `SendEmail` is `Send` automatically — wasm-bindgen makes `JsValue`
+    // `Send + Sync` and every extern `pub type` in `email.rs` carries that
+    // through. This compile-time check guards against an upstream
+    // regression.
+    use super::SendEmail;
+    fn _assert_send<T: Send>() {}
+    #[allow(dead_code)]
+    fn _check() {
+        _assert_send::<SendEmail>();
     }
 }

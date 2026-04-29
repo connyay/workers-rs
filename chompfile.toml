@@ -3,21 +3,12 @@ version = 0.1
 [[task]]
 name = 'build:types'
 deps = ['install:ts-gen']
-# Externals point unresolved types at the high-level `worker` crate's re-exports
-# (or the underlying web-sys / js-sys types). The generated file lives inside
-# `worker/` and is included via `mod email;` in worker/src/lib.rs.
+# `Env` / `ExecutionContext` are project-specific re-exports that ts-gen
+# can't infer; everything else (`ReadableStream`, `Headers`, `Event`, …)
+# resolves through ts-gen's built-in web_sys defaults.
 run = '''ts-gen --input types/email.d.ts --output worker/src/email.rs \
-  --external "ReadableStream=::web_sys::ReadableStream" \
-  --external "Headers=::web_sys::Headers" \
-  --external "Event=::web_sys::Event" \
   --external "Env=crate::Env" \
-  --external "ExecutionContext=crate::Context"
-# Top-level `SendEmail.send(message: &EmailMessage)` references
-# `email::EmailMessage` (the constructor class inside `pub mod email`),
-# but ts-gen does not yet emit a `use email::EmailMessage` for that
-# cross-module reference. Prepend it ourselves; removable once ts-gen
-# resolves the same-file module imports natively.
-node -e "const f=require('fs');const p='worker/src/email.rs';f.writeFileSync(p,'#[allow(unused_imports)] use email::EmailMessage;\n'+f.readFileSync(p,'utf8'))"'''
+  --external "ExecutionContext=crate::Context"'''
 
 [[task]]
 name = 'install:ts-gen'

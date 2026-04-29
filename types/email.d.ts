@@ -1,9 +1,9 @@
 /*
  * Email only types from @cloudflare/worker-types. Valid as of 28/04/2026.
  * This file builds src/email.rs as auto-generated bindings using ts-gen.
- * 
+ *
  * NOTE: All hand edits to the @cloudflare/worker-types are marked with an "EDIT:" comment.
- */ 
+ */
 
 /**
  * The **`ExtendableEvent`** interface extends the lifetime of the `install` and `activate` events dispatched on the global scope as part of the service worker lifecycle.
@@ -27,30 +27,31 @@ interface EmailSendResult {
    */
   messageId: string;
 }
-// EDIT: upstream declares the legacy email constructor inside
-// `declare module "cloudflare:email" { let _EmailMessage: { new(...) };
-// export { _EmailMessage as EmailMessage } }` paired with a global
-// `interface EmailMessage` of the same name. ts-gen then emits two
-// distinct Rust types, which forces hand-rolled `unchecked_ref` casts at
-// every call site.
+// EDIT: upstream splits `EmailMessage` into a global `interface
+// EmailMessage` (the instance shape) and a `let _EmailMessage: { new(): EmailMessage }`
+// inside `declare module "cloudflare:email"`, exported as `EmailMessage`.
+// At runtime they are the same type — TS only splits them because module
+// declarations cannot directly declare a class with both a constructor
+// and an instance shape readable from the outer scope.
 //
-// Until ts-gen learns to fully unify the same-named module export with
-// the global interface, we sidestep by giving the *interface* a distinct
-// name (`StructuredEmailMessage`) and letting the module-scoped class
-// keep the runtime name `EmailMessage`. So:
-//
-//   * `EmailMessage` — module-scoped class imported from
-//     `cloudflare:email`, used to construct raw-MIME messages and pass
-//     to `SendEmail.send(message)`.
-//   * `StructuredEmailMessage` — global interface, the envelope-getters
-//     view exposed on `ForwardableEmailMessage` and elsewhere.
-//
-// Two names, two types — but the wasm-bindgen import `EmailMessage`
-// matches the runtime export, so no shim renaming is required.
+// In Rust + wasm-bindgen, a single `pub type EmailMessage` with a
+// `#[wasm_bindgen(constructor)]` fn naturally covers both roles, so we
+// collapse the upstream pattern into one `class EmailMessage` inside the
+// module declaration. Everything that referenced upstream's global
+// `EmailMessage` now imports from `cloudflare:email`.
 declare module "cloudflare:email" {
+  /**
+   * An email message that can be sent from a Worker.
+   */
   class EmailMessage {
     constructor(from: string, to: string, raw: string | ReadableStream);
+    /**
+     * Envelope From attribute of the email message.
+     */
     readonly from: string;
+    /**
+     * Envelope To attribute of the email message.
+     */
     readonly to: string;
   }
   export { EmailMessage };
@@ -58,26 +59,9 @@ declare module "cloudflare:email" {
 import { EmailMessage } from "cloudflare:email";
 
 /**
- * An email message that can be sent from a Worker.
- *
- * EDIT: renamed from upstream's `EmailMessage` to avoid the same-name
- * collision with the `cloudflare:email` constructor class. See the
- * EDIT note on the module declaration below for the rationale.
- */
-interface StructuredEmailMessage {
-  /**
-   * Envelope From attribute of the email message.
-   */
-  readonly from: string;
-  /**
-   * Envelope To attribute of the email message.
-   */
-  readonly to: string;
-}
-/**
  * An email message that is sent to a consumer Worker and can be rejected/forwarded.
  */
-interface ForwardableEmailMessage extends StructuredEmailMessage {
+interface ForwardableEmailMessage extends EmailMessage {
   /**
    * Stream of the email message content.
    */
@@ -108,7 +92,7 @@ interface ForwardableEmailMessage extends StructuredEmailMessage {
    * @param message The reply message.
    * @returns A promise that resolves when the email message is replied.
    */
-  reply(message: StructuredEmailMessage): Promise<EmailSendResult>;
+  reply(message: EmailMessage): Promise<EmailSendResult>;
 }
 /** A file attachment for an email message */
 type EmailAttachment =
@@ -135,9 +119,6 @@ interface EmailAddress {
  * A binding that allows a Worker to send email messages.
  */
 interface SendEmail {
-  // EDIT: this overload takes the `cloudflare:email`-imported
-  // `EmailMessage` class directly — see the EDIT note on that module
-  // declaration above for the naming rationale.
   send(message: EmailMessage): Promise<EmailSendResult>;
   send(builder: {
     from: string | EmailAddress;
