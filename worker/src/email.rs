@@ -18,12 +18,12 @@ extern "C" {
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub type ExtendableEvent;
     #[doc = " The **`ExtendableEvent.waitUntil()`** method tells the event dispatcher that work is ongoing."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " [MDN Reference](https://developer.mozilla.org/docs/Web/API/ExtendableEvent/waitUntil)"]
     #[wasm_bindgen(method, js_name = "waitUntil")]
     pub fn wait_until(this: &ExtendableEvent, promise: &Promise);
     #[doc = " The **`ExtendableEvent.waitUntil()`** method tells the event dispatcher that work is ongoing."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " [MDN Reference](https://developer.mozilla.org/docs/Web/API/ExtendableEvent/waitUntil)"]
     #[wasm_bindgen(method, catch, js_name = "waitUntil")]
     pub fn try_wait_until(this: &ExtendableEvent, promise: &Promise) -> Result<(), JsValue>;
@@ -40,14 +40,14 @@ extern "C" {
     pub fn set_message_id(this: &EmailSendResult, val: &str);
 }
 impl EmailSendResult {
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `message_id`: The Email Message ID"]
     pub fn new(message_id: &str) -> EmailSendResult {
         Self::builder(message_id).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `message_id`: The Email Message ID"]
     pub fn builder(message_id: &str) -> EmailSendResultBuilder {
         let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
@@ -78,36 +78,36 @@ extern "C" {
     #[wasm_bindgen(method, getter, js_name = "rawSize")]
     pub fn raw_size(this: &ForwardableEmailMessage) -> f64;
     #[doc = " Reject this email message by returning a permanent SMTP error back to the connecting client including the given reason."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Arguments"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " * `reason` - The reject reason."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Returns"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " void"]
     #[wasm_bindgen(method, js_name = "setReject")]
     pub fn set_reject(this: &ForwardableEmailMessage, reason: &str);
     #[doc = " Reject this email message by returning a permanent SMTP error back to the connecting client including the given reason."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Arguments"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " * `reason` - The reject reason."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Returns"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " void"]
     #[wasm_bindgen(method, catch, js_name = "setReject")]
     pub fn try_set_reject(this: &ForwardableEmailMessage, reason: &str) -> Result<(), JsValue>;
     #[doc = " Forward this email message to a verified destination address of the account."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Arguments"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " * `rcptTo` - Verified destination address."]
     #[doc = " * `headers` - A [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers)."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Returns"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " A promise that resolves when the email message is forwarded."]
     #[wasm_bindgen(method, catch)]
     pub async fn forward(
@@ -115,14 +115,14 @@ extern "C" {
         rcpt_to: &str,
     ) -> Result<EmailSendResult, JsValue>;
     #[doc = " Forward this email message to a verified destination address of the account."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Arguments"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " * `rcptTo` - Verified destination address."]
     #[doc = " * `headers` - A [Headers object](https://developer.mozilla.org/en-US/docs/Web/API/Headers)."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Returns"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " A promise that resolves when the email message is forwarded."]
     #[wasm_bindgen(method, catch, js_name = "forward")]
     pub async fn forward_with_headers(
@@ -131,13 +131,13 @@ extern "C" {
         headers: &Headers,
     ) -> Result<EmailSendResult, JsValue>;
     #[doc = " Reply to the sender of this email message with a new EmailMessage object."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Arguments"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " * `message` - The reply message."]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " ## Returns"]
-    #[doc = " "]
+    #[doc = ""]
     #[doc = " A promise that resolves when the email message is replied."]
     #[wasm_bindgen(method, catch)]
     pub async fn reply(
@@ -180,30 +180,36 @@ extern "C" {
     pub fn set_type(this: &EmailAttachment, val: &str);
 }
 impl EmailAttachment {
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
     pub fn new_inline(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
         Self::builder_inline(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
     pub fn new_attachment(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
         Self::builder_attachment(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -214,10 +220,12 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_inline_with_array_buffer(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -228,10 +236,12 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_attachment_with_array_buffer(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -242,10 +252,12 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_inline_with_js_value(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -256,10 +268,12 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_attachment_with_js_value(content, filename, r#type).build()
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -271,10 +285,12 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -290,10 +306,12 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -309,10 +327,12 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -328,10 +348,12 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -347,10 +369,12 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
+    #[doc = " # Inlined fields"]
+    #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
-    #[doc = " "]
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = ""]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
     #[doc = " * `type`"]
@@ -398,15 +422,15 @@ extern "C" {
     pub fn set_email(this: &EmailAddress, val: &str);
 }
 impl EmailAddress {
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `name`"]
     #[doc = " * `email`"]
     pub fn new(name: &str, email: &str) -> EmailAddress {
         Self::builder(name, email).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `name`"]
     #[doc = " * `email`"]
     pub fn builder(name: &str, email: &str) -> EmailAddressBuilder {
@@ -497,16 +521,16 @@ extern "C" {
     pub fn set_attachments(this: &SendEmailBuilder, val: &Array<EmailAttachment>);
 }
 impl SendEmailBuilder {
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
     pub fn new(from: &str, to: &str, subject: &str) -> SendEmailBuilder {
         Self::builder(from, to, subject).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -517,8 +541,8 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_str_and_array(from, to, subject).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -529,8 +553,8 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_email_address_and_str(from, to, subject).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -541,8 +565,8 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_email_address_and_array(from, to, subject).build()
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -553,8 +577,8 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -569,8 +593,8 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
@@ -585,8 +609,8 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Provided fields"]
-    #[doc = " "]
+    #[doc = " # Parameters"]
+    #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
     #[doc = " * `subject`"]
