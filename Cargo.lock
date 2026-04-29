@@ -1434,7 +1434,7 @@ dependencies = [
 
 [[package]]
 name = "js-sys"
-version = "0.3.95"
+version = "0.3.97"
 dependencies = [
  "cfg-if",
  "futures-util",
@@ -1551,6 +1551,12 @@ dependencies = [
  "libc",
  "pkg-config",
 ]
+
+[[package]]
+name = "mail-builder"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "900998f307338c4013a28ab14d760b784067324b164448c6d98a89e44810473b"
 
 [[package]]
 name = "matchit"
@@ -2333,6 +2339,14 @@ checksum = "8a7852d02fc848982e0c167ef163aaff9cd91dc640ba85e263cb1ce46fae51cd"
 dependencies = [
  "serde",
  "serde_core",
+]
+
+[[package]]
+name = "send-email-on-workers"
+version = "0.1.0"
+dependencies = [
+ "mail-builder",
+ "worker",
 ]
 
 [[package]]
@@ -3420,7 +3434,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.118"
+version = "0.2.120"
 dependencies = [
  "cfg-if",
  "once_cell",
@@ -3431,7 +3445,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-cli-support"
-version = "0.2.118"
+version = "0.2.120"
 dependencies = [
  "anyhow",
  "base64",
@@ -3447,7 +3461,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-futures"
-version = "0.4.68"
+version = "0.4.70"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -3455,7 +3469,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro"
-version = "0.2.118"
+version = "0.2.120"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -3463,7 +3477,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.118"
+version = "0.2.120"
 dependencies = [
  "bumpalo",
  "proc-macro2",
@@ -3474,14 +3488,14 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.118"
+version = "0.2.120"
 dependencies = [
  "unicode-ident",
 ]
 
 [[package]]
 name = "wasm-bindgen-test"
-version = "0.3.68"
+version = "0.3.70"
 dependencies = [
  "async-trait",
  "cast",
@@ -3501,7 +3515,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-macro"
-version = "0.3.68"
+version = "0.3.70"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3510,7 +3524,7 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-test-shared"
-version = "0.2.118"
+version = "0.2.120"
 
 [[package]]
 name = "wasm-encoder"
@@ -3595,7 +3609,7 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.95"
+version = "0.3.97"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
