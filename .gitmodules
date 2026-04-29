@@ -4,3 +4,6 @@
 [submodule "wasm-streams"]
 	path = wasm-streams
 	url = git@github.com:guybedford/wasm-streams.git
+[submodule "ts-gen"]
+	path = ts-gen
+	url = git@github.com:wasm-bindgen/ts-gen

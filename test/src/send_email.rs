@@ -124,12 +124,12 @@ async fn dispatch_mime(sender: &SendEmail, scenario: &MimeScenario) -> Result<St
         scenario.envelope_to,
         &scenario.raw(),
     )?;
-    sender.send_mime(&message).await.map(|r| r.message_id)
+    sender.send_mime(&message).await.map(|r| r.message_id())
 }
 
 async fn dispatch_structured(sender: &SendEmail, email: Result<Email>) -> Result<String> {
     let email = email?;
-    sender.send(&email).await.map(|r| r.message_id)
+    sender.send(&email).await.map(|r| r.message_id())
 }
 
 fn respond(result: Result<String>) -> Result<Response> {

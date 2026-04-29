@@ -16,7 +16,7 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
         _ => return Response::error("not found", 404),
     };
 
-    Response::ok(format!("sent: {}", result.message_id))
+    Response::ok(format!("sent: {}", result.message_id()))
 }
 
 async fn send_structured(sender: &SendEmail) -> Result<EmailSendResult> {

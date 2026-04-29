@@ -1,11 +1,19 @@
 use std::collections::BTreeMap;
 
-use serde::{ser::SerializeStruct, Deserialize, Serialize, Serializer};
+use serde::{ser::SerializeStruct, Serialize, Serializer};
 use wasm_bindgen::{JsCast, JsValue};
-use wasm_bindgen_futures::JsFuture;
-use worker_sys::{EmailMessage as EmailMessageSys, SendEmail as SendEmailSys};
 
-use crate::{error::Error, send::SendFuture, EnvBinding, Result};
+use crate::{error::Error, EnvBinding, Result};
+
+// JS-side bindings come from the auto-generated `crate::email` module
+// (`chomp build:types` from `types/email.d.ts`). We re-export the slice
+// users actually need, keeping this file focused on the high-level
+// ergonomics — builders, address typing, attachment shaping — that don't
+// have a 1:1 with the JS API.
+pub use crate::email::email::EmailMessage;
+pub use crate::email::EmailSendResult;
+
+use crate::email::SendEmail as SendEmailSys;
 
 /// A binding to the [Cloudflare Email Sending] service, declared under
 /// `[[send_email]]` in `wrangler.toml` and retrieved via
@@ -36,7 +44,7 @@ use crate::{error::Error, send::SendFuture, EnvBinding, Result};
 ///         .text("Thanks for signing up.")
 ///         .build()?;
 ///     let result = env.send_email("EMAIL")?.send(&email).await?;
-///     Response::ok(result.message_id)
+///     Response::ok(result.message_id())
 /// }
 /// ```
 #[derive(Debug)]
@@ -67,7 +75,7 @@ impl JsCast for SendEmail {
     }
 
     fn unchecked_from_js(val: JsValue) -> Self {
-        Self(val.into())
+        Self(val.unchecked_into())
     }
 
     fn unchecked_from_js_ref(val: &JsValue) -> &Self {
@@ -77,19 +85,13 @@ impl JsCast for SendEmail {
 
 impl AsRef<JsValue> for SendEmail {
     fn as_ref(&self) -> &JsValue {
-        &self.0
+        self.0.as_ref()
     }
 }
 
 impl From<SendEmail> for JsValue {
     fn from(sender: SendEmail) -> Self {
-        JsValue::from(sender.0)
-    }
-}
-
-impl From<SendEmailSys> for SendEmail {
-    fn from(inner: SendEmailSys) -> Self {
-        Self(inner)
+        sender.0.into()
     }
 }
 
@@ -100,8 +102,8 @@ impl SendEmail {
         // `headers` map; default `serialize_bytes` behavior produces a
         // `Uint8Array` for binary attachment content.
         let ser = serde_wasm_bindgen::Serializer::new().serialize_maps_as_objects(true);
-        let payload = email.serialize(&ser).map_err(JsValue::from)?;
-        self.send_js(&payload).await
+        let payload = email.serialize(&ser)?;
+        Ok(self.0.send_with_builder(payload.unchecked_ref()).await?)
     }
 
     /// Dispatch a prebuilt [`EmailMessage`] containing a fully-formed RFC 5322
@@ -109,40 +111,11 @@ impl SendEmail {
     /// for cases where you need precise control over the MIME structure
     /// (custom headers, DKIM passthrough, VERP bounces, etc.).
     pub async fn send_mime(&self, message: &EmailMessage) -> Result<EmailSendResult> {
-        self.send_js(message.0.as_ref()).await
-    }
-
-    async fn send_js(&self, payload: &JsValue) -> Result<EmailSendResult> {
-        let promise = self.0.send(payload)?;
-        let value = SendFuture::new(JsFuture::from(promise)).await?;
-        Ok(serde_wasm_bindgen::from_value(value)?)
-    }
-}
-
-/// Return value of a successful send.
-#[derive(Debug, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct EmailSendResult {
-    /// The runtime-assigned message id (also exposed as the `Message-ID`
-    /// header on the delivered message).
-    pub message_id: String,
-}
-
-/// An RFC 5322 MIME message ready to be handed to [`SendEmail::send_mime`].
-///
-/// The envelope `from`/`to` addresses drive the SMTP `MAIL FROM` and `RCPT TO`
-/// commands and may legitimately differ from the `From:`/`To:` headers inside
-/// `raw`. That matters for bounces, VERP, or BCC. For everyday use where you
-/// don't care about the distinction, prefer [`Email`] and
-/// [`SendEmail::send`].
-#[derive(Debug)]
-pub struct EmailMessage(EmailMessageSys);
-
-impl EmailMessage {
-    /// Build a message from envelope addresses and a fully-formed RFC 5322
-    /// MIME body.
-    pub fn new(from: &str, to: &str, raw: &str) -> Result<Self> {
-        Ok(Self(EmailMessageSys::new(from, to, raw)?))
+        // The TS spec types `SendEmail.send` against the global `EmailMessage`
+        // interface, but the constructor lives on the `cloudflare:email`
+        // module-scoped subtype. Cast through `JsValue` to feed it to the
+        // interface-typed binding.
+        Ok(self.0.send(message.unchecked_ref()).await?)
     }
 }
 

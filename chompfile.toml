@@ -1,6 +1,25 @@
 version = 0.1
 
 [[task]]
+name = 'build:types'
+deps = ['install:ts-gen']
+# Externals point unresolved types at the high-level `worker` crate's re-exports
+# (or the underlying web-sys / js-sys types). The generated file lives inside
+# `worker/` and is included via `mod email;` in worker/src/lib.rs.
+run = '''ts-gen --input types/email.d.ts --output worker/src/email.rs \
+  --external "ReadableStream=::web_sys::ReadableStream" \
+  --external "Headers=::web_sys::Headers" \
+  --external "Event=::web_sys::Event" \
+  --external "Env=crate::Env" \
+  --external "ExecutionContext=crate::Context"'''
+
+[[task]]
+name = 'install:ts-gen'
+# ts-gen pulls in oxc which needs a newer rustc than the workspace's pinned 1.88;
+# build with the user's stable toolchain instead so it ignores rust-toolchain.toml.
+run = 'cargo +stable install --path ts-gen'
+
+[[task]]
 name = 'build:wasm-bindgen'
 cwd = 'wasm-bindgen'
 run = 'cargo build -p wasm-bindgen-cli --bin wasm-bindgen'
