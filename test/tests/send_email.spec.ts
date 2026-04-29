@@ -24,6 +24,10 @@ describe("send email (raw MIME)", () => {
     expectSuccess(await runScenario("mime-ok"));
   });
 
+  test("sends a valid email constructed from a ReadableStream", async () => {
+    expectSuccess(await runScenario("mime-stream"));
+  });
+
   test.each([
     ["mime-missing-message-id", /message-id/i],
     ["mime-disallowed-sender", /email from .* not allowed/i],
