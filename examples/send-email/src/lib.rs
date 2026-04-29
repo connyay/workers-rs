@@ -20,15 +20,19 @@ async fn fetch(req: Request, env: Env, _ctx: Context) -> Result<Response> {
 }
 
 async fn send_structured(sender: &SendEmail) -> Result<EmailSendResult> {
-    let email = Email::builder()
-        .from(("Sending email test", SENDER))
+    let from = EmailAddress::builder()
+        .name("Sending email test")
+        .email(SENDER)
+        .build()?;
+    let builder = SendEmailBuilder::builder()
+        .from_with_email_address(&from)
         .to(RECIPIENT)
         .subject("An email generated in a Worker")
         .text("Congratulations, you just sent an email from a Worker.")
         .html("<p>Congratulations, you just sent an email from a Worker.</p>")
         .build()?;
 
-    sender.send(&email).await
+    Ok(sender.send_with_builder(&builder).await?)
 }
 
 async fn send_raw_mime(sender: &SendEmail) -> Result<EmailSendResult> {
@@ -49,5 +53,5 @@ async fn send_raw_mime(sender: &SendEmail) -> Result<EmailSendResult> {
         .map_err(|e| Error::RustError(e.to_string()))?;
 
     let message = EmailMessage::new(SENDER, RECIPIENT, &raw)?;
-    sender.send_mime(&message).await
+    Ok(sender.send(&message).await?)
 }

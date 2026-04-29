@@ -1,5 +1,7 @@
 use crate::SomeSharedData;
-use worker::{Date, Email, EmailAddress, EmailMessage, Env, Request, Response, Result, SendEmail};
+use worker::{
+    Date, EmailAddress, EmailMessage, Env, Request, Response, Result, SendEmail, SendEmailBuilder,
+};
 
 const SENDER: &str = "allowed-sender@example.com";
 const RECIPIENT: &str = "allowed-recipient@example.com";
@@ -70,31 +72,39 @@ impl MimeScenario {
     }
 }
 
-fn build_structured(name: &str) -> Option<Result<Email>> {
+fn build_structured(name: &str) -> Option<Result<SendEmailBuilder>> {
+    let builder = SendEmailBuilder::builder();
     let builder = match name {
-        "structured-ok" => Email::builder()
+        "structured-ok" => builder
             .from(SENDER)
             .to(RECIPIENT)
             .subject("structured integration test")
             .text("hello from the structured path"),
-        "structured-with-name" => Email::builder()
-            .from(EmailAddress::with_name("Integration", SENDER))
-            .to(RECIPIENT)
-            .subject("structured integration test")
-            .html("<p>hello from the structured path</p>"),
-        "structured-disallowed-sender" => Email::builder()
+        "structured-with-name" => {
+            let address = EmailAddress::builder()
+                .name("Integration")
+                .email(SENDER)
+                .build()
+                .ok()?;
+            builder
+                .from_with_email_address(&address)
+                .to(RECIPIENT)
+                .subject("structured integration test")
+                .html("<p>hello from the structured path</p>")
+        }
+        "structured-disallowed-sender" => builder
             .from(BAD_SENDER)
             .to(RECIPIENT)
             .subject("structured integration test")
             .text("hello"),
-        "structured-disallowed-recipient" => Email::builder()
+        "structured-disallowed-recipient" => builder
             .from(SENDER)
             .to(BAD_RECIPIENT)
             .subject("structured integration test")
             .text("hello"),
         _ => return None,
     };
-    Some(builder.build())
+    Some(builder.build().map_err(Into::into))
 }
 
 #[worker::send]
@@ -111,25 +121,27 @@ pub async fn handle_send_email(req: Request, env: Env, _data: SomeSharedData) ->
         return respond(dispatch_mime(&sender, &scenario).await);
     }
 
-    if let Some(email_result) = build_structured(&name) {
-        return respond(dispatch_structured(&sender, email_result).await);
+    if let Some(builder_result) = build_structured(&name) {
+        return respond(dispatch_structured(&sender, builder_result).await);
     }
 
     Response::error(format!("unknown scenario: {name}"), 400)
 }
 
 async fn dispatch_mime(sender: &SendEmail, scenario: &MimeScenario) -> Result<String> {
-    let message = EmailMessage::new(
-        scenario.envelope_from,
-        scenario.envelope_to,
-        &scenario.raw(),
-    )?;
-    sender.send_mime(&message).await.map(|r| r.message_id())
+    let message =
+        EmailMessage::new(scenario.envelope_from, scenario.envelope_to, &scenario.raw())?;
+    let result = sender.send(&message).await?;
+    Ok(result.message_id())
 }
 
-async fn dispatch_structured(sender: &SendEmail, email: Result<Email>) -> Result<String> {
-    let email = email?;
-    sender.send(&email).await.map(|r| r.message_id())
+async fn dispatch_structured(
+    sender: &SendEmail,
+    builder: Result<SendEmailBuilder>,
+) -> Result<String> {
+    let builder = builder?;
+    let result = sender.send_with_builder(&builder).await?;
+    Ok(result.message_id())
 }
 
 fn respond(result: Result<String>) -> Result<Response> {

@@ -27,10 +27,44 @@ interface EmailSendResult {
    */
   messageId: string;
 }
+// EDIT: upstream declares the legacy email constructor inside
+// `declare module "cloudflare:email" { let _EmailMessage: { new(...) };
+// export { _EmailMessage as EmailMessage } }` paired with a global
+// `interface EmailMessage` of the same name. ts-gen then emits two
+// distinct Rust types, which forces hand-rolled `unchecked_ref` casts at
+// every call site.
+//
+// Until ts-gen learns to fully unify the same-named module export with
+// the global interface, we sidestep by giving the *interface* a distinct
+// name (`StructuredEmailMessage`) and letting the module-scoped class
+// keep the runtime name `EmailMessage`. So:
+//
+//   * `EmailMessage` — module-scoped class imported from
+//     `cloudflare:email`, used to construct raw-MIME messages and pass
+//     to `SendEmail.send(message)`.
+//   * `StructuredEmailMessage` — global interface, the envelope-getters
+//     view exposed on `ForwardableEmailMessage` and elsewhere.
+//
+// Two names, two types — but the wasm-bindgen import `EmailMessage`
+// matches the runtime export, so no shim renaming is required.
+declare module "cloudflare:email" {
+  class EmailMessage {
+    constructor(from: string, to: string, raw: string | ReadableStream);
+    readonly from: string;
+    readonly to: string;
+  }
+  export { EmailMessage };
+}
+import { EmailMessage } from "cloudflare:email";
+
 /**
  * An email message that can be sent from a Worker.
+ *
+ * EDIT: renamed from upstream's `EmailMessage` to avoid the same-name
+ * collision with the `cloudflare:email` constructor class. See the
+ * EDIT note on the module declaration below for the rationale.
  */
-interface EmailMessage {
+interface StructuredEmailMessage {
   /**
    * Envelope From attribute of the email message.
    */
@@ -43,7 +77,7 @@ interface EmailMessage {
 /**
  * An email message that is sent to a consumer Worker and can be rejected/forwarded.
  */
-interface ForwardableEmailMessage extends EmailMessage {
+interface ForwardableEmailMessage extends StructuredEmailMessage {
   /**
    * Stream of the email message content.
    */
@@ -74,7 +108,7 @@ interface ForwardableEmailMessage extends EmailMessage {
    * @param message The reply message.
    * @returns A promise that resolves when the email message is replied.
    */
-  reply(message: EmailMessage): Promise<EmailSendResult>;
+  reply(message: StructuredEmailMessage): Promise<EmailSendResult>;
 }
 /** A file attachment for an email message */
 type EmailAttachment =
@@ -101,6 +135,9 @@ interface EmailAddress {
  * A binding that allows a Worker to send email messages.
  */
 interface SendEmail {
+  // EDIT: this overload takes the `cloudflare:email`-imported
+  // `EmailMessage` class directly — see the EDIT note on that module
+  // declaration above for the naming rationale.
   send(message: EmailMessage): Promise<EmailSendResult>;
   send(builder: {
     from: string | EmailAddress;
@@ -123,11 +160,3 @@ declare type EmailExportedHandler<Env = unknown, Props = unknown> = (
   env: Env,
   ctx: ExecutionContext<Props>,
 ) => void | Promise<void>;
-declare module "cloudflare:email" {
-  let _EmailMessage: {
-    prototype: EmailMessage;
-    // EDIT: 
-    new (from: string, to: string, raw: string | ReadableStream): EmailMessage;
-  };
-  export { _EmailMessage as EmailMessage };
-}

@@ -194,8 +194,8 @@ pub use crate::router::{RouteContext, RouteParams, Router};
 pub use crate::schedule::*;
 pub use crate::secret_store::SecretStore;
 pub use crate::send_email::{
-    AttachmentContent, Email, EmailAddress, EmailAttachment, EmailBuilder, EmailMessage,
-    EmailSendResult, SendEmail,
+    EmailAddress, EmailAttachment, EmailMessage, EmailSendResult, SendEmail, SendEmailBuilder,
+    StructuredEmailMessage,
 };
 pub use crate::socket::*;
 pub use crate::streams::*;

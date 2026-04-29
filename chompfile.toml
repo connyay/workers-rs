@@ -11,7 +11,13 @@ run = '''ts-gen --input types/email.d.ts --output worker/src/email.rs \
   --external "Headers=::web_sys::Headers" \
   --external "Event=::web_sys::Event" \
   --external "Env=crate::Env" \
-  --external "ExecutionContext=crate::Context"'''
+  --external "ExecutionContext=crate::Context"
+# Top-level `SendEmail.send(message: &EmailMessage)` references
+# `email::EmailMessage` (the constructor class inside `pub mod email`),
+# but ts-gen does not yet emit a `use email::EmailMessage` for that
+# cross-module reference. Prepend it ourselves; removable once ts-gen
+# resolves the same-file module imports natively.
+node -e "const f=require('fs');const p='worker/src/email.rs';f.writeFileSync(p,'#[allow(unused_imports)] use email::EmailMessage;\n'+f.readFileSync(p,'utf8'))"'''
 
 [[task]]
 name = 'install:ts-gen'
