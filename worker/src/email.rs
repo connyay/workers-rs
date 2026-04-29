@@ -40,15 +40,15 @@ extern "C" {
     pub fn set_message_id(this: &EmailSendResult, val: &str);
 }
 impl EmailSendResult {
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
-    #[doc = " * `message_id`: The Email Message ID"]
+    #[doc = " * `message_id` - The Email Message ID"]
     pub fn new(message_id: &str) -> EmailSendResult {
         Self::builder(message_id).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
-    #[doc = " * `message_id`: The Email Message ID"]
+    #[doc = " * `message_id` - The Email Message ID"]
     pub fn builder(message_id: &str) -> EmailSendResultBuilder {
         let inner: Self = JsCast::unchecked_into(js_sys::Object::new());
         inner.set_message_id(message_id);
@@ -180,11 +180,11 @@ extern "C" {
     pub fn set_type(this: &EmailAttachment, val: &str);
 }
 impl EmailAttachment {
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -192,11 +192,11 @@ impl EmailAttachment {
     pub fn new_inline(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
         Self::builder_inline(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -204,11 +204,11 @@ impl EmailAttachment {
     pub fn new_attachment(content: &str, filename: &str, r#type: &str) -> EmailAttachment {
         Self::builder_attachment(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -220,11 +220,11 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_inline_with_array_buffer(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -236,11 +236,11 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_attachment_with_array_buffer(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -252,11 +252,11 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_inline_with_js_value(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -268,11 +268,11 @@ impl EmailAttachment {
     ) -> EmailAttachment {
         Self::builder_attachment_with_js_value(content, filename, r#type).build()
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -285,11 +285,11 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -306,11 +306,11 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -327,11 +327,11 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -348,11 +348,11 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"inline\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -369,11 +369,11 @@ impl EmailAttachment {
         inner.set_type(r#type);
         EmailAttachmentBuilder { inner }
     }
-    #[doc = " # Inlined fields"]
+    #[doc = " ## Inlined fields"]
     #[doc = ""]
     #[doc = " * `disposition: \"attachment\"`"]
     #[doc = ""]
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `content`"]
     #[doc = " * `filename`"]
@@ -422,14 +422,14 @@ extern "C" {
     pub fn set_email(this: &EmailAddress, val: &str);
 }
 impl EmailAddress {
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `name`"]
     #[doc = " * `email`"]
     pub fn new(name: &str, email: &str) -> EmailAddress {
         Self::builder(name, email).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `name`"]
     #[doc = " * `email`"]
@@ -521,7 +521,7 @@ extern "C" {
     pub fn set_attachments(this: &SendEmailBuilder, val: &Array<EmailAttachment>);
 }
 impl SendEmailBuilder {
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -529,7 +529,7 @@ impl SendEmailBuilder {
     pub fn new(from: &str, to: &str, subject: &str) -> SendEmailBuilder {
         Self::builder(from, to, subject).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -541,7 +541,7 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_str_and_array(from, to, subject).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -553,7 +553,7 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_email_address_and_str(from, to, subject).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -565,7 +565,7 @@ impl SendEmailBuilder {
     ) -> SendEmailBuilder {
         Self::builder_with_email_address_and_array(from, to, subject).build()
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -577,7 +577,7 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -593,7 +593,7 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
@@ -609,7 +609,7 @@ impl SendEmailBuilder {
         inner.set_subject(subject);
         SendEmailBuilderBuilder { inner }
     }
-    #[doc = " # Parameters"]
+    #[doc = " ## Arguments"]
     #[doc = ""]
     #[doc = " * `from`"]
     #[doc = " * `to`"]
